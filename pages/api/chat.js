@@ -13,22 +13,35 @@ export default async function handler(req, res) {
   }
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        { role: "system", content: "Kamu adalah teman ngobrol gaul dan santai, dibuat oleh Rizky Max." },
-        ...messages
-      ]
+    const completion = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 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"
+      },
+      body: JSON.stringify({
+        model: "mixtral-8x7b-32768",
+        messages: [
+          { role: "system", content: "Kamu adalah teman ngobrol santai buatan Rizky Max." },
+          ...messages
+        ]
+      })
     });
 
-    const reply = completion.choices[0].message.content;
+    const data = await completion.json();
+
+    if (!data || !data.choices || !data.choices[0]) {
+      return res.status(500).json({ error: "Respons tidak valid dari Groq." });
+    }
+
+    const reply = data.choices[0].message.content;
 
     res.status(200).json({
       development: "Rizky Max",
       reply
     });
   } catch (error) {
-    console.error("OpenAI ERROR:", error);
-    res.status(500).json({ error: "Gagal mengambil jawaban dari AI" });
+    console.error("Groq API ERROR:", error);
+    res.status(500).json({ error: "Gagal mengambil jawaban dari AI (Groq)" });
   }
-}
+        }
