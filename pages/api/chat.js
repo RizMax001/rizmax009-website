@@ -1,40 +1,41 @@
 import { Configuration, OpenAIApi } from 'openai';
+import config from '../../config';
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: config.openaiApiKey,
 });
 
 const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
-  const messageFromUrl = req.query.msg;
+  const { msg } = req.query;
 
-  if (!messageFromUrl) {
-    return res.status(400).json({ error: 'Pesan (msg) kosong di URL.' });
+  if (!msg) {
+    return res.status(400).json({ error: 'Message is required' });
   }
 
   try {
-    const response = await openai.createChatCompletion({
+    const completion = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'system',
-          content: 'Kamu adalah AI teman ngobrol buatan Rizky Max. Gaya kamu santai, gaul, lucu, dan penuh emoji. Jawab seperti anak muda zaman sekarang, jangan formal.',
+          content: 'Kamu adalah teman ngobrol yang gaul dan santai.',
         },
         {
           role: 'user',
-          content: messageFromUrl,
+          content: msg,
         },
       ],
     });
 
-    const reply = response.data.choices[0].message.content;
-    
+    const reply = completion.data.choices[0].message.content;
     res.status(200).json({
-      development: 'Rizky Max',
-      reply: reply
+      development: config.creator,
+      reply,
     });
-  } catch (err) {
-    res.status(500).json({ error: 'Gagal memproses permintaan.' });
+  } catch (error) {
+    console.error('OpenAI Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
