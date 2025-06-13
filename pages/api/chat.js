@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   const { msg } = req.query;
 
   if (!msg) {
-    return res.status(400).json({ error: 'Pesan tidak boleh kosong.' });
+    return res.status(400).json({ error: "Pesan (msg) wajib diisi" });
   }
 
   try {
