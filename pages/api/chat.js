@@ -6,24 +6,18 @@ const openai = new OpenAI({
 });
 
 export default async function handler(req, res) {
-  const msg = req.body?.msg || req.query?.msg;
+  const messages = req.body?.messages;
 
-  if (!msg) {
-    return res.status(400).json({ error: "Pesan kosong. Kirim lewat body JSON atau ?msg= di URL." });
+  if (!messages || !Array.isArray(messages)) {
+    return res.status(400).json({ error: "Format pesan tidak valid." });
   }
 
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
-        {
-          role: "system",
-          content: "Kamu adalah teman ngobrol gaul dan santai, dibuat oleh Rizky Max."
-        },
-        {
-          role: "user",
-          content: msg
-        }
+        { role: "system", content: "Kamu adalah teman ngobrol gaul dan santai, dibuat oleh Rizky Max." },
+        ...messages
       ]
     });
 
