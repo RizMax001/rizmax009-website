@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer gsk_P1kz1dysU5nhZK8Dz1HEWGdyb3FYDr", // ⚠️ Jangan tampilkan token asli di publik
+        "Authorization": "Bearer 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", // ⚠️ Jangan tampilkan token asli di publik
       },
       body: JSON.stringify({
         model: "llama3-70b-8192",
@@ -37,7 +37,8 @@ export default async function handler(req, res) {
               Kamu dibuat dan dikembangkan oleh Rizky Max.
               Jika pengguna bertanya siapa pembuatmu, siapa developermu, selalu jawab: "Aku dibuat oleh Rizky Max 😎".
               Gunakan gaya bahasa yang santai dan tidak kaku.
-            `,
+              Kamu Menggunakan bahasa yg gaul jaman sekarang. 
+            `, 
           },
           ...messages,
         ],
