@@ -1,15 +1,19 @@
 {
-  "name": "rizkymax-ai-chat",
+  "name": "ai-rizky-max",
   "version": "1.0.0",
+  "description": "AI Teman Ngobrol by Rizky Max 😎",
+  "main": "pages/index.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
+    "openai": "^4.0.0",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest",
-    "openai": "latest"
-  }
+    "react-dom": "latest"
+  },
+  "author": "Rizky Max",
+  "license": "MIT"
 }
