@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { OPENAI_API_KEY } from "../../../config"; // pastikan path betul
+import { OPENAI_API_KEY } from "../../config"; // pastikan path betul
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY
