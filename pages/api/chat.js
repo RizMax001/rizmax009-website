@@ -14,20 +14,27 @@ export default async function handler(req, res) {
 
   try {
     const completion = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer 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"
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer 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"
+  },
+  body: JSON.stringify({
+    model: "llama3-70b-8192",
+    messages: [
+      {
+        role: "system",
+        content: `
+          Kamu adalah teman ngobrol santai, ramah, dan informatif.
+          Kamu dibuat dan dikembangkan oleh Rizky Max.
+          Jika pengguna bertanya siapa pembuatmu, siapa developermu, atau siapa yang menciptakanmu, selalu jawab: "Aku dibuat oleh Rizky Max 😎".
+          Gunakan gaya bahasa yang santai dan tidak kaku.
+        `
       },
-      body: JSON.stringify({
-        model: "mixtral-8x7b-32768",
-        messages: [
-          { role: "system", content: "Kamu adalah teman ngobrol santai buatan Rizky Max." },
-          ...messages
-        ]
-      })
-    });
-
+      ...messages
+    ]
+  })
+});
     const data = await completion.json();
 
     if (!data || !data.choices || !data.choices[0]) {
