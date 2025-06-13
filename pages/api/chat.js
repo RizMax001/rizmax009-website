@@ -6,10 +6,10 @@ const openai = new OpenAI({
 });
 
 export default async function handler(req, res) {
-  const msg = req.query.msg;
+  const msg = req.body?.msg || req.query?.msg;
 
   if (!msg) {
-    return res.status(400).json({ error: "Pesan kosong, isi ?msg=halo di URL." });
+    return res.status(400).json({ error: "Pesan kosong. Kirim lewat body JSON atau ?msg= di URL." });
   }
 
   try {
