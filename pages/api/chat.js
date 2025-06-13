@@ -23,10 +23,11 @@ export default async function handler(req, res) {
 
     const reply = completion.choices[0].message.content;
 
-    res.status(200).json({
-      development: config.creator,
-      reply,
-    });
+    return res.status(200).json({
+  development: "Rizky Max",
+  reply: responseDariOpenAI
+});
+
   } catch (error) {
     console.error('OpenAI ERROR:', error.message);
     res.status(500).json({ error: 'Gagal ambil jawaban dari AI' });
