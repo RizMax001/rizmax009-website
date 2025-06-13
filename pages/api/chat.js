@@ -1,41 +1,34 @@
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 import config from '../../config';
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: config.openaiApiKey,
 });
-
-const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
   const { msg } = req.query;
 
   if (!msg) {
-    return res.status(400).json({ error: 'Message is required' });
+    return res.status(400).json({ error: 'Pesan tidak boleh kosong.' });
   }
 
   try {
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
-        {
-          role: 'system',
-          content: 'Kamu adalah teman ngobrol yang gaul dan santai.',
-        },
-        {
-          role: 'user',
-          content: msg,
-        },
+        { role: 'system', content: 'Kamu adalah teman ngobrol yang gaul dan santai.' },
+        { role: 'user', content: msg },
       ],
     });
 
-    const reply = completion.data.choices[0].message.content;
+    const reply = completion.choices[0].message.content;
+
     res.status(200).json({
       development: config.creator,
       reply,
     });
   } catch (error) {
-    console.error('OpenAI Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('OpenAI ERROR:', error.message);
+    res.status(500).json({ error: 'Gagal ambil jawaban dari AI' });
   }
 }
