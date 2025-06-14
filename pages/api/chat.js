@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     reply = sensorKataKasar(reply);
 
     res.status(200).json({
-      development: "Rizky Max (Mohammad Rizky Alfarizi)",
+      development: "Rizky Max (Muhammad Rizky Alfarizi)",
       reply,
     });
   } catch (error) {
