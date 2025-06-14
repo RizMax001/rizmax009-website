@@ -5,7 +5,6 @@ const openai = new OpenAI({
   apiKey: "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"
 });
 
-
 export default async function handler(req, res) {
   const { msg } = req.query;
   let messages = [];
