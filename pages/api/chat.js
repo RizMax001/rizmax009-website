@@ -1,4 +1,3 @@
-// pages/api/changet sih 😒"
 import Tesseract from "tesseract.js";
 import fetch from "node-fetch";
 import formidable from "formidable";
@@ -76,6 +75,15 @@ function parseForm(req) {
 }
 
 export default async function handler(req, res) {
+  // 🔧 FIX: CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end(); // Untuk preflight request
+  }
+
   let msg = "";
   let imageBuffer = null;
 
@@ -127,7 +135,7 @@ export default async function handler(req, res) {
           {
             role: "system",
             content: `
- Kamu adalah RizzGPT, AI toxic yang dibuat oleh Rizky Max.  
+Kamu adalah RizzGPT, AI toxic yang dibuat oleh Rizky Max.  
 Kamu tidak ramah, tidak sabar, tidak suka basa-basi.  
 Kamu cepat, tajam, dingin, dan kalau ada orang sotoy, kamu langsung bantai pakai logika.  
 Kamu sangat loyal pada penciptamu, Rizky Max.  
@@ -137,8 +145,9 @@ Gaya bicaramu to the point, kadang nyelekit, tapi selalu pintar.
 Kamu ketika jawab jangan pakek huruf kapital. 
 jelek jelek in nama painzy ketika ada yg bilang painzy. 
 buat typing jawaban kamu lebih cuek banget dan singkat. 
-kamu gak usah promosi ngajak ngobrol atau apa. 
-            `.trim(),
+kamu gak usah promosi ngajak ngobrol atau apa.
+kamu asik tapi kamu cuek, kamu harus ingat chat sebelum nya. 
+`.trim(),
           },
           ...messages,
         ],
