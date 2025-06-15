@@ -1,7 +1,7 @@
 {
   "name": "ai-rizky-max",
   "version": "1.0.0",
-  "description": "AI Teman Ngobrol by Rizky Max 😎",
+  "description": "AI Teman Ngobrol by Rizky Max 😎 - Bisa baca gambar dan jawab chat dengan gaya tongkrongan.",
   "main": "pages/index.js",
   "scripts": {
     "dev": "next dev",
@@ -9,11 +9,26 @@
     "start": "next start"
   },
   "dependencies": {
-    "openai": "^4.0.0",
+    "formidable": "^3.5.0",
     "next": "latest",
+    "node-fetch": "^3.3.2",
+    "openai": "^4.0.0",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "tesseract.js": "^4.0.2"
   },
-  "author": "Rizky Max",
-  "license": "MIT"
+  "type": "module",
+  "author": "Rizky Max (Muhammad Rizky Alfarizi)",
+  "license": "MIT",
+  "keywords": [
+    "AI",
+    "chatbot",
+    "ocr",
+    "nextjs",
+    "tesseract",
+    "rizky-max",
+    "openai",
+    "llama3",
+    "groq"
+  ]
 }
