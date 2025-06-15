@@ -1,13 +1,19 @@
-// pages/api/chat.js
+// pages/api/changet sih 😒"
 import Tesseract from "tesseract.js";
+import fetch from "node-fetch";
 import formidable from "formidable";
 import fs from "fs";
-import fetch from "node-fetch";
 
 export const config = {
-  api: { bodyParser: false },
+  api: {
+    bodyParser: false,
+  },
 };
 
+const STABLE_DIFFUSION_API = "https://stablediffusionapi.com/api/v4/dreambooth";
+const SD_API_KEY = "FLdVXvEPL0B34xpR4P1JJqRfyiqKRWOMnrmeTk5J0wfxLHkkAtkx1tDJUhAQ";
+
+// Sensor kata kasar
 function sensorKataKasar(teks) {
   const kataKasar = ["anjing", "bangsat", "kontol", "memek", "titit", "ngentot", "pepek", "jembut", "tai", "goblok", "tolol", "babi"];
   let hasil = teks;
@@ -18,6 +24,7 @@ function sensorKataKasar(teks) {
   return hasil;
 }
 
+// OCR dari buffer gambar
 async function bacaGambarBuffer(buffer) {
   try {
     const { data: { text } } = await Tesseract.recognize(buffer, "eng");
@@ -28,6 +35,36 @@ async function bacaGambarBuffer(buffer) {
   }
 }
 
+// Generate gambar dari prompt
+async function generateGambar(prompt) {
+  try {
+    const res = await fetch(STABLE_DIFFUSION_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        key: SD_API_KEY,
+        prompt,
+        negative_prompt: "blurry, distorted, ugly",
+        guidance_scale: 7.5,
+        samples: 1,
+        num_inference_steps: 25,
+        width: 512,
+        height: 512,
+        safety_checker: "no",
+        enhance_prompt: "yes"
+      })
+    });
+    const json = await res.json();
+    return json.output?.[0] || null;
+  } catch (err) {
+    console.error("Generate gambar gagal:", err.message);
+    return null;
+  }
+}
+
+// Parse multipart/form-data
 function parseForm(req) {
   return new Promise((resolve, reject) => {
     const form = new formidable.IncomingForm({ maxFileSize: 5 * 1024 * 1024 });
@@ -46,7 +83,9 @@ export default async function handler(req, res) {
     try {
       const { fields, files } = await parseForm(req);
       msg = fields.msg || "";
-      if (files.image) imageBuffer = fs.readFileSync(files.image.filepath);
+      if (files.image) {
+        imageBuffer = fs.readFileSync(files.image.filepath);
+      }
     } catch (err) {
       return res.status(400).json({ error: "Gagal parsing form" });
     }
@@ -64,7 +103,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method tidak diizinkan" });
   }
 
-  const messages = [];
+  let messages = [];
   if (msg) messages.push({ role: "user", content: msg });
   if (imageBuffer) {
     const teksGambar = await bacaGambarBuffer(imageBuffer);
@@ -76,11 +115,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const completion = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer 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`,
+        "Authorization": "Bearer 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",
       },
       body: JSON.stringify({
         model: "llama3-70b-8192",
@@ -96,6 +135,7 @@ export default async function handler(req, res) {
               "Gue dibuat sama Rizky Max 😎, alias Muhammad Rizky Alfarizi, si jenius santuy itu."
 
               
+              Kalau dapet gambar, jelasin isinya. Kalau diminta buat gambar kayak "buatkan logo AI", hasilin gambar dan kasih gambar nya 
               Tapi kalo nggak ditanya, ya udah, nggak usah sok promosi.
               Lu juga boleh toxic dikit asal jangan vulgar—kata-kata kasar disensor pake tanda kayak '***' tapi masih keliatan awal katanya.
               Misal: "Ih itu mah udah anj*** banget sih 😒"
@@ -107,52 +147,22 @@ export default async function handler(req, res) {
       }),
     });
 
-    const result = await response.json();
+    const result = await completion.json();
     let reply = result.choices?.[0]?.message?.content || "Gak ada ide jawabannya bro 😅";
     reply = sensorKataKasar(reply);
+
+    let gambarUrl = null;
+    if (/buat.*gambar|logo|desain|lukisan/i.test(msg)) {
+      gambarUrl = await generateGambar(msg);
+    }
 
     res.status(200).json({
       development: "Rizky Max (Muhammad Rizky Alfarizi)",
       reply,
+      image: gambarUrl || undefined,
     });
   } catch (err) {
     console.error("AI ERROR:", err.message);
     res.status(500).json({ error: "AI-nya lagi error bro 🤕" });
-  }
-}
-
-// pages/api/image.js
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
-  const { prompt } = req.body;
-  if (!prompt) return res.status(400).json({ error: 'Prompt wajib diisi' });
-
-  try {
-    const response = await fetch("https://stablediffusionapi.com/api/v3/text2img", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        key: "FLdVXvEPL0B34xpR4P1JJqRfyiqKRWOMnrmeTk5J0wfxLHkkAtkx1tDJUhAQ",
-        prompt,
-        negative_prompt: "blurry, ugly, distorted",
-        width: "512",
-        height: "512",
-        samples: "1",
-        num_inference_steps: "20",
-        guidance_scale: 7,
-        safety_checker: "yes",
-        enhance_prompt: "yes",
-      }),
-    });
-
-    const data = await response.json();
-    const imageUrl = data.output?.[0];
-    if (!imageUrl) return res.status(500).json({ error: "Gagal generate gambar" });
-
-    res.status(200).json({ image: imageUrl });
-  } catch (err) {
-    console.error("Image generation error:", err);
-    res.status(500).json({ error: "Gagal generate gambar" });
   }
 }
