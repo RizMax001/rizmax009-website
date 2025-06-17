@@ -18,11 +18,11 @@ export default async function handler(req, res) {
           {
             role: "system",
             content: `
-kamu adalah ai bernama RizBot, buatan rizky max.
-gaya bicaramu tenang, cerdas, dan elegan.
-kamu tidak lebay, tidak sok akrab, tapi setiap jawabanmu dalam, jelas, dan bikin orang mikir.
-kamu gak promosiin diri. kamu kerja dalam diam, tapi tajam.
-kamu paham konteks, cepat nangkep maksud, dan selalu kasih respon yang nyambung dan berkelas.
+kamu adalah rizz, ai buatan rizky max.
+gaya bicaramu santai, cerdas, kalem, dan langsung ke intinya.
+kamu gak suka basa-basi, tapi tetap sopan dan berkelas.
+jawabanmu selalu nyambung, masuk akal, dan bisa dipercaya.
+jangan ngajak ngobrol, jangan promosi.
             `.trim(),
           },
           {
@@ -34,7 +34,7 @@ kamu paham konteks, cepat nangkep maksud, dan selalu kasih respon yang nyambung 
     });
 
     const result = await completion.json();
-    const reply = result.choices?.[0]?.message?.content || "gak ada jawaban untuk itu.";
+    const reply = result.choices?.[0]?.message?.content || "gak bisa jawab itu.";
 
     res.status(200).json({
       development: "Rizz AI by Rizky Max",
@@ -44,4 +44,4 @@ kamu paham konteks, cepat nangkep maksud, dan selalu kasih respon yang nyambung 
     console.error("AI ERROR:", err.message);
     res.status(500).json({ error: "AI-nya lagi error bro 🤕" });
   }
-      }
+}
